@@ -1,0 +1,151 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-05-06 16:33+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: frequencies/admin.py:7
+msgid "Activate selected stimuli"
+msgstr "Activar estímulos seleccionados"
+
+#: frequencies/admin.py:11
+msgid "Deactivate selected stimuli"
+msgstr "Desactivar estímulos seleccionados"
+
+#: frequencies/apps.py:9
+msgid "Frequencies"
+msgstr "Frecuencias"
+
+#: frequencies/models.py:6
+msgid "Term"
+msgstr "Término"
+
+#: frequencies/models.py:7
+msgid "Filename"
+msgstr "Nombre de archivo"
+
+#: frequencies/models.py:8
+msgid "Is active"
+msgstr "Activo"
+
+#: frequencies/models.py:11 frequencies/models.py:117
+msgid "Stimulus"
+msgstr "Estímulo"
+
+#: frequencies/models.py:12
+msgid "Stimuli"
+msgstr "Estímulos"
+
+#: frequencies/models.py:88
+msgid "Created at"
+msgstr "Fecha de creación"
+
+#: frequencies/models.py:89
+msgid "Mode"
+msgstr "Modalidad"
+
+#: frequencies/models.py:90
+msgid "Is mobile"
+msgstr "Móvil"
+
+#: frequencies/models.py:91
+msgid "Browser"
+msgstr "Navegador"
+
+#: frequencies/models.py:92
+msgid "Operating system"
+msgstr "Sistema operativo"
+
+#: frequencies/models.py:93
+msgid "Name"
+msgstr "Nombre"
+
+#: frequencies/models.py:94
+msgid "Contact"
+msgstr "Contacto"
+
+#: frequencies/models.py:95
+msgid "Sex"
+msgstr "Sexo"
+
+#: frequencies/models.py:96
+msgid "Ethnicity"
+msgstr "Etnia"
+
+#: frequencies/models.py:97
+msgid "Deaf community"
+msgstr "Comunidad sorda"
+
+#: frequencies/models.py:98
+msgid "Birthdate"
+msgstr "Fecha de nacimiento"
+
+#: frequencies/models.py:99
+msgid "Birthplace"
+msgstr "Lugar de nacimiento"
+
+#: frequencies/models.py:100
+msgid "Education"
+msgstr "Educación"
+
+#: frequencies/models.py:101
+msgid "School"
+msgstr "Escuela"
+
+#: frequencies/models.py:102 frequencies/models.py:103
+msgid "Age of Acquisition"
+msgstr "Edad de adquisición"
+
+#: frequencies/models.py:104
+msgid "Language at home"
+msgstr "Lengua prevalente en el hogar"
+
+#: frequencies/models.py:105
+msgid "LSU fluency"
+msgstr "Fluidez en LSU"
+
+#: frequencies/models.py:106
+msgid "Preferred language"
+msgstr "Lengua preferida"
+
+#: frequencies/models.py:109 frequencies/models.py:116
+msgid "Form"
+msgstr "Formulario"
+
+#: frequencies/models.py:110
+msgid "Forms"
+msgstr "Formularios"
+
+#: frequencies/models.py:118
+msgid "Familiarity"
+msgstr "Familiaridad"
+
+#: frequencies/models.py:119
+msgid "Response time"
+msgstr "Tiempo de respuesta"
+
+#: frequencies/models.py:120
+msgid "Time elapsed"
+msgstr "Tiempo transcurrido"
+
+#: frequencies/models.py:123
+msgid "Reply"
+msgstr "Respuesta"
+
+#: frequencies/models.py:124
+msgid "Replies"
+msgstr "Respuestas"

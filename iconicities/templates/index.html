@@ -1,0 +1,402 @@
+{% load static %}
+{% load i18n %}
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Iconicidad LSU</title>
+    <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
+    <script src="{% static 'bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'jspsych/js/jspsych.js' %}"></script>
+    <script src="{% static 'jspsych/js/plugin-instructions.js' %}"></script>
+    <script src="{% static 'jspsych/js/plugin-browser-check.js' %}"></script>
+    <script src="{% static 'jspsych/js/plugin-survey-html-form.js' %}"></script>
+    <script src="{% static 'jspsych/js/plugin-video-button-response.js' %}"></script>
+    <script src="{% static 'jspsych/js/plugin-preload.js' %}"></script>
+    <script src="{% static 'jspsych/js/plugin-call-function.js' %}"></script>
+    <script src="{% static 'jspsych/js/plugin-html-keyboard-response.js' %}"></script>
+    <script src="{% static 'jspsych/js/plugin-html-button-response.js' %}"></script>
+    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'jspsych/css/jspsych.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'css/experiment.css' %}" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    {% if mode == modes.DEBUG %}
+      <div class="alert alert-info text-center mb-0 alert-dismissible fade show">
+        <div>Estas usando una <strong>versión de desarrollo</strong>.</div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+    {% elif mode == modes.OFFLINE %}
+      <div class="alert alert-info text-center alert-dismissible fade show">
+        <div>¡Gracias por participar en forma presencial!</div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+    {% endif %}
+    <button id="finish_button" class="btn btn-danger position-absolute top-0 end-0 m-2 invisible" onclick="jsPsych.endCurrentTimeline();jsPsych.finishTrial();">
+      Terminar
+    </button>
+    <div id="experimentPlaceholder" class="container"></div>
+  </body>
+  {% csrf_token %}
+  <script>
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    
+    const jsPsych = initJsPsych({
+      display_element: 'experimentPlaceholder',
+      on_finish: function(data) {
+        location.reload();
+      }
+    });
+
+    // Likert scale used in the experiment
+    const likert = ['1', '2', '3', '4', '5', '6', '7'];
+
+    // Video paths corresponding to the stimuli
+    const videos_mapper = {{ stimuli|safe }};
+    const videos = Object.keys(videos_mapper);
+    const terms = videos.map(x => videos_mapper[x].term);
+    
+    // Timeout used (in milliseconds) to present the Finish button or end the experiment (when ONLINE)
+    const timeout = 60000 * {{ timeout }};
+
+    // Image path corresponding to the fixation cross
+    const fixation_cross = '{% static "cross.png" %}';
+
+    // Image path corresponding to the experiment partners
+    const udelar = '{% static "udelar.png" %}'
+    const cibpsi = '{% static "cibpsi.png" %}'
+    const mcc = '{% static "mcc.png" %}'
+
+    var timeline = [];
+
+    const preload = {
+      type: jsPsychPreload,
+      images: [fixation_cross, udelar, cibpsi, mcc]
+    };
+    timeline.push(preload);
+
+    const browser_check = {
+      type: jsPsychBrowserCheck,
+      features: ["browser", "mobile", "os"]
+    };
+    timeline.push(browser_check);
+
+    const instructions = {
+        type: jsPsychInstructions,
+        pages: function() {
+          const random_index = Math.floor(Math.random() * videos.length);
+          const example_video = videos[random_index];
+          const example_term = terms[random_index];
+          return [
+          `
+          <div class="mb-4">
+            <div class="p-3 pb-md-4 mx-auto mt-4 text-center">
+              <h1>Iconicidad en LSU</h1>
+            </div>
+            <div class="row">
+              <div class="col-md-9 mx-auto text-start">
+                <small>
+                  <p class="lead">Este estudio lo realizan investigadores del Centro de Investigación Básica en Psicología de la Universidad de la República.</p>
+                  <p>La presente investigación tiene como objetivo <strong>conocer qué iconicidad tienen algunas señas de la lengua de señas uruguaya (LSU)</strong>. Si aceptás participar en la investigación, <strong>deberás puntuar una lista de {{ sample_size }} señas de LSU de acuerdo a qué tan icónicas son. La tarea tendrá una duración máxima de {{ timeout }} minutos y solamente registraremos las puntuaciones en una base de datos online.</strong></p>
+                </small>
+                <div class="d-grid gap-2 d-sm-flex justify-content-sm-center py-5">
+                  <div class="px-4 gap-3">
+                    <img class="img-fluid" src="${ udelar }" />
+                  </div>
+                  <div class="px-4 gap-3">
+                    <img class="img-fluid" src="${ cibpsi }" />
+                  </div>
+                  <div class="px-4 gap-3">
+                    <img class="img-fluid" src="${ mcc }" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          `,
+          `
+          <div class="mb-4">
+            <div class="p-3 pb-md-4 mx-auto mt-4 text-center">
+              <h1>Consentimiento</h1>
+            </div>
+              <div class="col-md-9 mx-auto text-start">
+                <small>
+                  <ul class="list-unstyled">
+                    <li>
+                      Declaro que:
+                      <ul>
+                        <li>He leído la <a href="{% static 'information_paper.pdf' %}">hoja de información</a>.</li>
+                        <li>Entiendo que mi participación es voluntaria y libre.</li>
+                        <li>Entiendo que no obtendré beneficios directos a través de mi participación.</li>
+                        <li>Estoy informado sobre el tratamiento confidencial y anónimo con el que se manejarán mis datos personales.</li>
+                        <li>Entiendo que, en caso de tener dudas, puedo contactar con el investigador responsable, para realizar preguntas y resolver mis dudas sobre el estudio y mi participación en el mismo.</li>
+                      </ul>
+                    </li>
+                  </ul>
+                  <p>
+                    Si aceptas participar, has un clic en el cuadro de abajo que dice “Sí quiero participar". En caso de abandonar, puedes cerrar esta página.
+                  </p>
+                  <div class=" bg-light p-3 border">
+                    <div class="form-check">
+                      <input type="checkbox" class="form-check-input" id="consent_checkbox">
+                      <label class="form-check-label" for="consent_checkbox">Sí acepto participar en la investigación.</label>
+                    </div>
+                  </div>
+                </small>
+              </div>
+            </div>
+          </div>
+          `,
+          `
+          <div class="mb-4">
+            <div class="p-3 pb-md-4 mx-auto mt-4 text-center">
+              <h1>Instrucciones</h1>
+            </div>
+            <div class="row">
+              <div class="col-md-9 mx-auto text-start">
+                <small>
+                  <p>En esta tarea, queremos explorar cuán icónicas son algunas señas en LSU. Las señas icónicas son aquellas que tienen una relación visual con su significado. Por ejemplo, la seña CASA es muy icónica porque las manos imitan la forma del techo de una casa. Incluso si alguien no conoce LSU, puede entender el significado de la seña CASA al verla. Sin embargo, hay otras señas que no tienen esta relación visual y, por lo tanto, no son icónicas.</p>
+                  <p>Verás una lista de señas con su significado visible debajo. Deberás puntuar cada seña en una <strong>escala de 1 a 7</strong>, según cuán icónica crees que es:</p>
+                  <ul class="list-unstyled">
+                    <li>El número 1 significa que <strong>no es icónica en absoluto</strong></li>
+                    <li>El número 7 significa que la seña es <strong>muy icónica</strong></li>
+                  </ul>
+                </small>
+                <p>A continuación, verás un ejemplo de lo mencionado previamente. Y luego deberás completar un breve formulario demográfico.</p>
+              </div>
+            </div>
+          </div>
+          `,
+          `
+          <div>
+            <div class="p-3 pb-md-4 mx-auto mt-4 text-center">
+              <h1>Ejemplo</h1>
+            </div>
+            <div class="row">
+              <div class="col-12 col-md-8 col-lg-6 mx-auto">
+                <div class="ratio ratio-4x3">
+                  <video autoplay playsinline muted loop width="640" height="512">
+                    <source src="${ example_video }" type="video/mp4">
+                  </video>
+                </div>
+                <div class="py-3">
+                  <div id="example-button-container" class="row">
+                    ${ likert.reduce((x, y) => x + `
+                      <div class="col px-0">
+                        <button class="btn btn-outline-secondary rounded-circle example-button">${y}</button>
+                      </div>
+                      `, '')
+                    }
+                  </div>
+                </div>
+                <div>
+                  <p>¿Qué tan icónica es la seña ${ example_term.toUpperCase() }?</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          `,
+        ]
+        },
+        show_clickable_nav: true,
+        button_label_next: "Continuar",
+        button_label_previous: "Atrás"
+    };
+    timeline.push(instructions);
+
+    {% for step in survey_steps %}
+      var survey = {
+        type: jsPsychSurveyHtmlForm,
+        button_label: 'Continuar',
+        html: function() {
+          return `<div class="mb-4">
+            <div class="p-3 pb-md-4 mx-auto mt-4 text-center">
+              <h1>Formulario</h1>
+            </div>
+            <div class="row">
+              <div class="col-md-6 mx-auto text-start">
+                <div class="mb-3">
+                  <label for="formControlInput" class="form-label">{{ step.label }}</label>
+                  {% if step.type == 'text' %}
+                    <input type="text" name="{{ step.hint }}" {% if step.required %}required {% endif %}class="form-control" id="formControlInput">
+                  {% elif step.type == 'radio' %}
+                    {% for value, label in step.options %}
+                      <div class="form-check">
+                        <input type="radio" name="{{ step.hint }}" value="{{ value }}" {% if step.required %}required {% endif %}class="form-check-input" id="{{value}}FormControlInput">
+                        <label class="form-check-label" for="{{value}}FormControlInput">
+                          {{ label }}
+                        </label>
+                      </div>
+                    {% endfor %}
+                  {% elif step.type == 'select' %}
+                    <select name="{{ step.hint }}" {% if step.required %}required {% endif %}class="form-select">
+                      <option disabled selected value></option>
+                      {% for option in step.options %}
+                        <option value="{{ option }}">{{ option }}</option>
+                      {% endfor %}
+                      <option value="N/A">Prefiero no responder</option>
+                    </select>
+                  {% elif step.type == 'likert' %}
+                    ${ likert.reduce((x, y) => x + `
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="{{ step.hint }}" id="inlineRadio${y}" value="${y}" {% if step.required %}required {% endif %}>
+                        <label class="form-check-label" for="inlineRadio${y}">${y}</label>
+                      </div>
+                      `, '')
+                    }
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+          `
+        }
+      };
+      timeline.push(survey);
+    {% endfor %}
+
+    let timeout_handler;
+    const intro = {
+      type: jsPsychHtmlButtonResponse,
+      stimulus: function() {
+        return `
+          <div class="row py-5">
+            <div class="col-12 col-md-8 col-lg-6 mx-auto">
+              <div class="col-12 mx-auto pt-3">
+                <p>Apretá el botón <strong>Empezar</strong> para comenzar el experimento.</p>
+              </div>
+            </div>
+          </div>
+        `
+      },
+      choices: ['Empezar'],
+      button_html: ['<button type="button" class="btn btn-primary">%choice%</button>'],
+      on_start: function() {
+        // set progress bar to 0 at the start of experiment
+        jsPsych.drawProgressBar();
+        jsPsych.setProgressBar(0);
+      },
+      on_finish: function() {
+        timeout_handler = window.setTimeout(function() {
+          {% if mode == modes.ONLINE %}
+            jsPsych.endCurrentTimeline();
+          {% else %}
+            const element = document.getElementById("finish_button")
+            element.classList.remove('invisible');
+            element.classList.add('visible');
+          {% endif %}
+        }, timeout);
+      },
+      data: {
+        'guid': jsPsych.randomization.randomID(32)
+      }
+    };
+    timeline.push(intro);
+
+    const fixation = {
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: `<div class="row py-5"><div class="col-12 col-md-8 col-lg-6 mx-auto"><div class="ratio ratio-4x3"><img src="${fixation_cross}"></div></div></div>`,
+      choices: 'NO_KEYS',
+      trial_duration: 300
+    };
+    const trial = {
+      type: jsPsychVideoButtonResponse,
+      stimulus: jsPsych.timelineVariable('stimulus'),
+      autoplay: true,
+      controls: false,
+      choices: likert,
+      button_html: '<button class="btn btn-outline-secondary rounded-circle my-3">%choice%</button>',
+      prompt: function() {
+        return '<p>¿Qué tan icónica es la seña ' + jsPsych.timelineVariable('term') + '?</p>';
+      },
+      css_classes: ['py-5'],
+      on_finish: function() {
+        // at the end of each trial, update the progress bar
+        // based on the current value and the proportion to update for each trial
+        var curr_progress_bar_value = jsPsych.getProgressBarCompleted();
+        jsPsych.setProgressBar(curr_progress_bar_value + (1 / {{ sample_size }}));
+      }
+    };
+    const procedure = {
+      timeline: [fixation, trial],
+      timeline_variables: videos.map(x => ({stimulus: [x], term: [videos_mapper[x].term.toUpperCase()]})),
+      randomize_order: true,
+      sample: {
+          type: 'without-replacement',
+          size: {{ sample_size }}
+      }
+    };
+    timeline.push(procedure);
+
+    const api = {
+      type: jsPsychCallFunction,
+      async: true,
+      func: function(done){
+        const values = jsPsych.data.get().values();
+        const guid = values.filter(x => x['guid'] !== undefined)[0]?.guid
+        const browser_values = values.filter(x => x['trial_type'] == 'browser-check')[0];
+
+        const form_values = values.filter(x => x['trial_type'] == 'survey-html-form').map(x => x["response"]);
+        const survey_response = form_values.length > 0 ? Object.assign(...form_values) : {};
+
+        const trial_responses = values.filter(x => x['trial_type'] == 'video-button-response' && x['stimulus'] !== undefined);
+
+        if (guid !== undefined) {
+          var json = {
+            'guid': guid,
+            'test_mode': {{ mode }},
+            'browser': browser_values.browser,
+            'operating_system': browser_values.os,
+            'is_mobile': browser_values.mobile,
+            'sex': survey_response.sex,
+            'birthdate': survey_response.birthdate,
+            'education': survey_response.education,
+            'preferred_language': survey_response.preferred_language,
+            'lsu_fluency': survey_response.lsu_fluency,
+            'replies': trial_responses.map(x => ({
+              'stimulus': videos_mapper[x.stimulus[0]].filename, 'iconicity': likert[x.response], 
+              'rt': x.rt,
+              'te': x.time_elapsed
+            }))
+          };
+          var xhr = new XMLHttpRequest();
+          xhr.open('POST', '{% url 'form-list' %}', true);
+          xhr.setRequestHeader('Content-Type', 'application/json');
+          xhr.setRequestHeader('X-CSRFToken', csrftoken);
+          xhr.send(JSON.stringify(json));
+          xhr.onload = done
+        } else {
+          done();
+        }
+      },
+      on_start: function() {
+        clearTimeout(timeout_handler);
+        const element = document.getElementById("finish_button");
+        element.classList.remove('visible');
+        element.classList.add('invisible');  
+      }
+    };
+    timeline.push(api);
+
+    const debrief = {
+      type: jsPsychHtmlButtonResponse,
+      stimulus: `
+        <div class="px-4 py-5 text-center">
+          <div class="col-lg-6 mx-auto">
+            <p>Has terminado</p>
+            <p>¡Muchas gracias por participar!</p>
+            <p>Apretá el botón <strong>Cerrar</strong> para terminar el experimento.</p>
+            <p>Por cualquier duda o consulta, podés comunicarte con el Centro de Investigación Básica en Psicología.</p>
+          </div>
+        </div>
+      `,
+      choices: ['Cerrar'],
+      button_html: '<button type="button" class="btn btn-primary">%choice%</button>'
+    };
+    timeline.push(debrief);
+
+    jsPsych.run(timeline);
+  </script>
+</html>
