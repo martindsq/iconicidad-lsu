@@ -14,8 +14,8 @@ def deactivate(self, request, queryset):
 
 @admin.register(Stimulus)
 class StimulusAdmin(admin.ModelAdmin):
-    list_display = ('term', 'file_name', 'is_active')
-    list_filter = ['is_active']
+    list_display = ('term', 'file_name', 'is_active', 'is_control')
+    list_filter = ['is_active', 'is_control']
     actions = [activate, deactivate]
 
 class ReplyInline(admin.TabularInline):

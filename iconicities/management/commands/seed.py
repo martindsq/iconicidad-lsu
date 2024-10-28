@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand
 import logging
 import csv
+import ast
 from iconicities.models import Stimulus
 
 logger = logging.getLogger(__name__)
@@ -31,10 +32,10 @@ def clear_data():
     Stimulus.objects.all().delete()
 
 
-def create_stimulus(term, filename):
+def create_stimulus(term, filename, is_control):
     """Creates an address object combining different elements from the list"""
     logger.info("Creating stimulus")
-    stimulus = Stimulus(term=term, file_name=filename)
+    stimulus = Stimulus(term=term, file_name=filename, is_control=is_control)
     stimulus.save()
     logger.info("{} stimulus created.".format(stimulus))
 
@@ -56,4 +57,4 @@ def run_seed(self, mode):
     with open(path) as f:
         reader = csv.reader(f)
         for row in reader:
-            create_stimulus(row[0], row[1])
+            create_stimulus(row[0], row[1], ast.literal_eval(row[2]))
