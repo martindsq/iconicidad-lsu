@@ -30,7 +30,7 @@ class ReplySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Reply
-        fields = ['stimulus', 'iconicity', 'control', 'rt', 'te']
+        fields = ['stimulus', 'iconicity', 'rt', 'te']
 
 class FormAndRepliesSerializer(FormSerializer):
     replies = ReplySerializer(many=True)

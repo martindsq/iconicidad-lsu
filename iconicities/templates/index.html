@@ -1,4 +1,3 @@
-
 {% load static %}
 {% load i18n %}
 
@@ -320,27 +319,8 @@
         jsPsych.setProgressBar(curr_progress_bar_value + (1 / {{ sample_size }}));
       }
     };
-    var control = {
-      type: jsPsychSurveyHtmlForm,
-      stimulus: jsPsych.timelineVariable('stimulus'),
-      button_label: 'Continuar',
-      html: function() {
-        return `<div class="mb-4">
-          <div class="row justify-content-center">
-            <div class="col-12 col-sm-6 text-center">
-              <div class="mb-3">
-                <label for="formControlInput" class="form-label">¿Qué aspecto de ` + jsPsych.timelineVariable('term') + ` crees que se vió reflejada en la forma?</label>
-                <input type="text" name="control" class="form-control" id="formControlInput">
-                <small id="controlHelp" class="form-text text-muted">Si crees que la forma de la seña no se pareció a su significado, puedes no escribir nada o escribir un guión</small>
-              </div>
-            </div>
-          </div>
-        </div>
-        `
-      }
-    };
     const procedure = {
-      timeline: [fixation, trial, control],
+      timeline: [fixation, trial],
       timeline_variables: videos.map(x => ({stimulus: [x], term: [videos_mapper[x].term.toUpperCase()]})),
       randomize_order: true,
       sample: {
@@ -376,8 +356,7 @@
             'preferred_language': survey_response.preferred_language,
             'lsu_fluency': survey_response.lsu_fluency,
             'replies': trial_responses.map(x => ({
-              'stimulus': videos_mapper[x.stimulus[0]].filename,
-              'iconicity': likert[x.response], 
+              'stimulus': videos_mapper[x.stimulus[0]].filename, 'iconicity': likert[x.response], 
               'rt': x.rt,
               'te': x.time_elapsed
             }))

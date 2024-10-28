@@ -64,7 +64,6 @@ class Reply(models.Model):
 	form = models.ForeignKey(Form, related_name='replies', on_delete=models.CASCADE, verbose_name=_('Form'))
 	stimulus = models.ForeignKey(Stimulus, on_delete=models.CASCADE, verbose_name=_('Stimulus'))
 	iconicity = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(1), MaxValueValidator(7)], verbose_name=_('Iconicity'))
-	control = models.CharField(null=True, blank=True, max_length=50, verbose_name=_('Control'))
 	rt = models.IntegerField(null=True, blank=True, verbose_name=_('Response time'))
 	te = models.IntegerField(null=True, blank=True, verbose_name=_('Time elapsed'))
 
