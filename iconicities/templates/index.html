@@ -57,6 +57,10 @@
     const videos_mapper = {{ stimuli|safe }};
     const videos = Object.keys(videos_mapper);
     const terms = videos.map(x => videos_mapper[x].term);
+
+    // Video paths corresponding to the examples
+    const examples_mapper = {{ examples|safe }};
+    const example_videos = Object.keys(examples_mapper);
     
     // Timeout used (in milliseconds) to present the Finish button or end the experiment (when ONLINE)
     const timeout = 60000 * {{ timeout }};
@@ -86,119 +90,125 @@
     const instructions = {
         type: jsPsychInstructions,
         pages: function() {
-          const random_index = Math.floor(Math.random() * videos.length);
-          const example_video = videos[random_index];
-          const example_term = terms[random_index];
           return [
-          `
-          <div class="mb-4">
-            <div class="p-3 pb-md-4 mx-auto mt-4 text-center">
-              <h1>Iconicidad en LSU</h1>
-            </div>
-            <div class="row">
-              <div class="col-md-9 mx-auto text-start">
-                <small>
-                  <p class="lead">Este estudio lo realizan investigadores del Centro de Investigación Básica en Psicología de la Universidad de la República.</p>
-                  <p>La presente investigación tiene como objetivo <strong>conocer qué iconicidad tienen algunas señas de la lengua de señas uruguaya (LSU)</strong>. Si aceptás participar en la investigación, <strong>deberás puntuar una lista de {{ sample_size }} señas de LSU de acuerdo a qué tan icónicas son. La tarea tendrá una duración máxima de {{ timeout }} minutos y solamente registraremos las puntuaciones en una base de datos online.</strong></p>
-                </small>
-                <div class="d-grid gap-2 d-sm-flex justify-content-sm-center py-5">
-                  <div class="px-4 gap-3">
-                    <img class="img-fluid" src="${ udelar }" />
-                  </div>
-                  <div class="px-4 gap-3">
-                    <img class="img-fluid" src="${ cibpsi }" />
-                  </div>
-                  <div class="px-4 gap-3">
-                    <img class="img-fluid" src="${ mcc }" />
-                  </div>
-                </div>
+            `
+            <div class="mb-4">
+              <div class="p-3 pb-md-4 mx-auto mt-4 text-center">
+                <h1>Iconicidad en LSU</h1>
               </div>
-            </div>
-          </div>
-          `,
-          `
-          <div class="mb-4">
-            <div class="p-3 pb-md-4 mx-auto mt-4 text-center">
-              <h1>Consentimiento</h1>
-            </div>
-              <div class="col-md-9 mx-auto text-start">
-                <small>
-                  <ul class="list-unstyled">
-                    <li>
-                      Declaro que:
-                      <ul>
-                        <li>He leído la <a href="{% static 'information_paper.pdf' %}">hoja de información</a>.</li>
-                        <li>Entiendo que mi participación es voluntaria y libre.</li>
-                        <li>Entiendo que no obtendré beneficios directos a través de mi participación.</li>
-                        <li>Estoy informado sobre el tratamiento confidencial y anónimo con el que se manejarán mis datos personales.</li>
-                        <li>Entiendo que, en caso de tener dudas, puedo contactar con el investigador responsable, para realizar preguntas y resolver mis dudas sobre el estudio y mi participación en el mismo.</li>
-                      </ul>
-                    </li>
-                  </ul>
-                  <p>
-                    Si aceptas participar, has un clic en el cuadro de abajo que dice “Sí quiero participar". En caso de abandonar, puedes cerrar esta página.
-                  </p>
-                  <div class=" bg-light p-3 border">
-                    <div class="form-check">
-                      <input type="checkbox" class="form-check-input" id="consent_checkbox">
-                      <label class="form-check-label" for="consent_checkbox">Sí acepto participar en la investigación.</label>
+              <div class="row">
+                <div class="col-md-9 mx-auto text-start">
+                  <small>
+                    <p class="lead">Este estudio lo realizan investigadores del Centro de Investigación Básica en Psicología de la Universidad de la República.</p>
+                    <p>La presente investigación tiene como objetivo <strong>conocer qué iconicidad tienen algunas señas de la lengua de señas uruguaya (LSU)</strong>. Si aceptás participar en la investigación, <strong>deberás puntuar una lista de {{ sample_size }} señas de LSU de acuerdo a qué tan icónicas son. La tarea tendrá una duración máxima de {{ timeout }} minutos y solamente registraremos las puntuaciones en una base de datos online.</strong></p>
+                  </small>
+                  <div class="d-grid gap-2 d-sm-flex justify-content-sm-center py-5">
+                    <div class="px-4 gap-3">
+                      <img class="img-fluid" src="${ udelar }" />
+                    </div>
+                    <div class="px-4 gap-3">
+                      <img class="img-fluid" src="${ cibpsi }" />
+                    </div>
+                    <div class="px-4 gap-3">
+                      <img class="img-fluid" src="${ mcc }" />
                     </div>
                   </div>
-                </small>
-              </div>
-            </div>
-          </div>
-          `,
-          `
-          <div class="mb-4">
-            <div class="p-3 pb-md-4 mx-auto mt-4 text-center">
-              <h1>Instrucciones</h1>
-            </div>
-            <div class="row">
-              <div class="col-md-9 mx-auto text-start">
-                <small>
-                  <p>En esta tarea, queremos explorar cuán icónicas son algunas señas en LSU. Las señas icónicas son aquellas que tienen una relación visual con su significado. Por ejemplo, la seña CASA es muy icónica porque las manos imitan la forma del techo de una casa. Incluso si alguien no conoce LSU, puede entender el significado de la seña CASA al verla. Sin embargo, hay otras señas que no tienen esta relación visual y, por lo tanto, no son icónicas.</p>
-                  <p>Verás una lista de señas con su significado visible debajo. Deberás puntuar cada seña en una <strong>escala de 1 a 7</strong>, según cuán icónica crees que es:</p>
-                  <ul class="list-unstyled">
-                    <li>El número 1 significa que <strong>no es icónica en absoluto</strong></li>
-                    <li>El número 7 significa que la seña es <strong>muy icónica</strong></li>
-                  </ul>
-                </small>
-                <p>A continuación, verás un ejemplo de lo mencionado previamente. Y luego deberás completar un breve formulario demográfico.</p>
-              </div>
-            </div>
-          </div>
-          `,
-          `
-          <div>
-            <div class="p-3 pb-md-4 mx-auto mt-4 text-center">
-              <h1>Ejemplo</h1>
-            </div>
-            <div class="row">
-              <div class="col-12 col-md-8 col-lg-6 mx-auto">
-                <div class="ratio ratio-4x3">
-                  <video autoplay playsinline muted loop width="640" height="512">
-                    <source src="${ example_video }" type="video/mp4">
-                  </video>
                 </div>
-                <div class="py-3">
-                  <div id="example-button-container" class="row">
-                    ${ likert.reduce((x, y) => x + `
-                      <div class="col px-0">
-                        <button class="btn btn-outline-secondary rounded-circle example-button">${y}</button>
+              </div>
+            </div>
+            `,
+            `
+            <div class="mb-4">
+              <div class="p-3 pb-md-4 mx-auto mt-4 text-center">
+                <h1>Consentimiento</h1>
+              </div>
+                <div class="col-md-9 mx-auto text-start">
+                  <small>
+                    <ul class="list-unstyled">
+                      <li>
+                        Declaro que:
+                        <ul>
+                          <li>He leído la <a href="{% static 'information_paper.pdf' %}">hoja de información</a>.</li>
+                          <li>Entiendo que mi participación es voluntaria y libre.</li>
+                          <li>Entiendo que no obtendré beneficios directos a través de mi participación.</li>
+                          <li>Estoy informado sobre el tratamiento confidencial y anónimo con el que se manejarán mis datos personales.</li>
+                          <li>Entiendo que, en caso de tener dudas, puedo contactar con el investigador responsable, para realizar preguntas y resolver mis dudas sobre el estudio y mi participación en el mismo.</li>
+                        </ul>
+                      </li>
+                    </ul>
+                    <p>
+                      Si aceptas participar, has un clic en el cuadro de abajo que dice “Sí quiero participar". En caso de abandonar, puedes cerrar esta página.
+                    </p>
+                    <div class=" bg-light p-3 border">
+                      <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="consent_checkbox">
+                        <label class="form-check-label" for="consent_checkbox">Sí acepto participar en la investigación.</label>
                       </div>
-                      `, '')
-                    }
+                    </div>
+                  </small>
+                </div>
+              </div>
+            </div>
+            `,
+            `
+            <div class="mb-4">
+              <div class="p-3 pb-md-4 mx-auto mt-4 text-center">
+                <h1>Instrucciones</h1>
+              </div>
+              <div class="row">
+                <div class="col-md-9 mx-auto text-start">
+                  <small>
+                    <p>En esta tarea, queremos explorar cuán icónicas son algunas señas en LSU. Las señas icónicas son aquellas que tienen una relación visual con su significado. Por ejemplo,</p>
+                    <ul class="list">
+                      <li>La seña CASA es muy icónica porque las manos imitan la forma de un techo a dos aguas. No todas las casas tienen un techo así, pero el techo a dos aguas es típico en muchas casas. Incluso si alguien no conoce LSU, puede entender más fácilmente el significado de la seña CASA al verla.</li>
+                      <li>La seña NADAR imita el movimiento del cuerpo que hace una persona al nadar, por lo que muchas personas también podrían adivinar más fácilmente su significado sin saber lenguas de señas.</li>
+                      <li>Finalmente, la seña PASADO se realiza apuntando hacia atrás. Si bien esta seña es díficil de adivinar, es igualmente icónica porque hace referencia a un esquema visual del tiempo en donde el pasado está atrás.
+                    </ul>
+                    <p>Sin embargo, hay otras señas que no tienen ninguna relación visual y, por lo tanto, no son icónicas. Por ejemplo, la seña LICEO se hace imitando la letra L en el alfabeto manual de la LSU. Incluso si la persona supiese el alfabeto manual, la seña no es icónica porque debe parecerse al objeto representado, no a una letra del alfabeto.</p>
+                    <p>Durante la tarea, verás una lista de señas con su significado visible debajo y deberás puntuar cada seña en una <strong>escala de 1 a 7</strong>, según cuán icónica crees que es:</p>
+                    <ul class="list-unstyled">
+                      <li>El número 1 significa que <strong>no es icónica en absoluto</strong></li>
+                      <li>El número 7 significa que la seña es <strong>muy icónica</strong></li>
+                    </ul>
+                  </small>
+                  <p>A continuación, verás algunos ejemplos de lo mencionado previamente. Y luego deberás completar un breve formulario demográfico.</p>
+                </div>
+              </div>
+            </div>
+            `,
+            {% for filename, example in examples.items %}
+              `
+              <div>
+                <div class="p-3 pb-md-4 mx-auto mt-4 text-center">
+                  <h1>Ejemplo</h1>
+                </div>
+                <div class="row">
+                  <div class="col-12 col-md-8 col-lg-6 mx-auto">
+                    <div class="ratio ratio-4x3">
+                      <video autoplay playsinline muted loop width="640" height="512">
+                        <source src="{{ filename }}" type="video/mp4">
+                      </video>
+                    </div>
+                    <div class="py-3">
+                      <div id="example-button-container" class="row">
+                        ${ likert.reduce((x, y) => x + `
+                          <div class="col px-0">
+                            <button class="btn btn-outline-secondary rounded-circle example-button">${y}</button>
+                          </div>
+                          `, '')
+                        }
+                      </div>
+                    </div>
+                    <div>
+                      <p>¿Qué tan icónica es la seña {{ example.term|upper }}?</p>
+                      <p><small>Recuerda: Las señas icónicas son aquellas que tienen una relación visual con su significado. Por lo que una persona que no sabe LSU podría ayudarse de esa similitud para entender más fácilmente su significado.</small></p>
+                    </div>
                   </div>
                 </div>
-                <div>
-                  <p>¿Qué tan icónica es la seña ${ example_term.toUpperCase() }?</p>
-                </div>
               </div>
-            </div>
-          </div>
-          `,
-        ]
+              `,
+            {% endfor %}
+          ]
         },
         show_clickable_nav: true,
         button_label_next: "Continuar",
@@ -322,11 +332,7 @@
     const procedure = {
       timeline: [fixation, trial],
       timeline_variables: videos.map(x => ({stimulus: [x], term: [videos_mapper[x].term.toUpperCase()]})),
-      randomize_order: true,
-      sample: {
-          type: 'without-replacement',
-          size: {{ sample_size }}
-      }
+      randomize_order: true
     };
     timeline.push(procedure);
 

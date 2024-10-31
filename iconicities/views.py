@@ -26,9 +26,18 @@ def index(request):
 	except ValueError:
 		mode = Form.Mode.ONLINE
 	
-	options = IconicitiesConfig.options
-	
 	template = loader.get_template('index.html')
+
+	options = IconicitiesConfig.options
+	sample_size = options.online_sample_size if mode == Form.Mode.ONLINE else options.offline_sample_size if mode == Form.Mode.OFFLINE else options.debug_sample_size
+	example_size = 3
+	
+	controls = Stimulus.objects.filter(is_active = True, is_control = True)
+	variables = Stimulus.objects.filter(is_active = True, is_control = False).order_by("?")
+	number_of_variables_to_pick = max(sample_size - controls.count(), 0)
+	stimuli = controls | variables[:number_of_variables_to_pick]
+	examples = variables[number_of_variables_to_pick:number_of_variables_to_pick+example_size]
+
 	context = {
     	'survey_steps': [
     		{
@@ -66,11 +75,11 @@ def index(request):
     			'options': Form.PreferredLanguage.choices
     		}	
     	],
-    	'stimuli': {static('terms/' + stimulus.file_name): {'filename': stimulus.file_name, 'term': stimulus.term} for stimulus in Stimulus.objects.filter(is_active = True)
-    	},
+    	'stimuli': {static('terms/' + stimulus.file_name): {'filename': stimulus.file_name, 'term': stimulus.term} for stimulus in stimuli[:sample_size]},
+    	'examples': {static('terms/' + example.file_name): {'filename': example.file_name, 'term': example.term} for example in examples[:example_size]},
     	'mode': mode,
     	'modes': Form.Mode,
     	'timeout': options.online_timeout if mode == Form.Mode.ONLINE else options.offline_timeout if mode == Form.Mode.OFFLINE else options.debug_timeout,
-    	'sample_size': options.online_sample_size if mode == Form.Mode.ONLINE else options.offline_sample_size if mode == Form.Mode.OFFLINE else options.debug_sample_size
+    	'sample_size': sample_size
 	}
 	return HttpResponse(template.render(context, request))
