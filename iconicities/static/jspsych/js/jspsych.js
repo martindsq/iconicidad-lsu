@@ -1001,7 +1001,7 @@ var jsPsychModule = (function (exports) {
                 request.open("GET", video, true);
                 request.responseType = "blob";
                 request.onload = () => {
-                    if (request.status === 200 || request.status === 0) {
+                    if (request.status === 200 || request.status === 206 || request.status === 0) {
                         const videoBlob = request.response;
                         video_buffers[video] = URL.createObjectURL(videoBlob); // IE10+
                         n_loaded++;
