@@ -2646,10 +2646,7 @@ var jsPsychModule = (function (exports) {
             options = Object.assign({ display_element: undefined, on_finish: () => { }, on_trial_start: () => { }, on_trial_finish: () => { }, on_data_update: () => { }, on_interaction_data_update: () => { }, on_close: () => { }, use_webaudio: true, exclusions: {}, show_progress_bar: false, message_progress_bar: "Completion Progress", auto_update_progress_bar: true, default_iti: 0, minimum_valid_rt: 0, experiment_width: null, override_safe_mode: false, case_sensitive_responses: false, extensions: [] }, options);
             this.opts = options;
             autoBind(this); // so we can pass JsPsych methods as callbacks and `this` remains the JsPsych instance
-            this.webaudio_context =
-                typeof window !== "undefined" && typeof window.AudioContext !== "undefined"
-                    ? new AudioContext()
-                    : null;
+            this.webaudio_context = null;
             // detect whether page is running in browser as a local file, and if so, disable web audio and video preloading to prevent CORS issues
             if (window.location.protocol == "file:" &&
                 (options.override_safe_mode === false || typeof options.override_safe_mode === "undefined")) {

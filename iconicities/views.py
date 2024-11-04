@@ -9,6 +9,7 @@ from .apps import IconicitiesConfig
 from .serializers import FormAndRepliesSerializer, StimulusSerializer
 from .permissions import IsAdminOrWriteOnly
 from django.views.decorators.csrf import csrf_protect
+from random import shuffle
 
 class FormViewSet(ModelViewSet):
     queryset = Form.objects.all()
@@ -32,10 +33,12 @@ def index(request):
 	sample_size = options.online_sample_size if mode == Form.Mode.ONLINE else options.offline_sample_size if mode == Form.Mode.OFFLINE else options.debug_sample_size
 	example_size = 3
 	
-	controls = Stimulus.objects.filter(is_active = True, is_control = True)
-	variables = Stimulus.objects.filter(is_active = True, is_control = False).order_by("?")
-	number_of_variables_to_pick = max(sample_size - controls.count(), 0)
-	stimuli = controls | variables[:number_of_variables_to_pick]
+	controls = list(Stimulus.objects.filter(is_active = True, is_control = True))
+	variables = list(Stimulus.objects.filter(is_active = True, is_control = False))
+	shuffle(variables)
+
+	number_of_variables_to_pick = max(sample_size - len(controls), 0)
+	stimuli = controls + variables[:number_of_variables_to_pick]
 	examples = variables[number_of_variables_to_pick:number_of_variables_to_pick+example_size]
 
 	context = {
