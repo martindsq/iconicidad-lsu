@@ -1,7 +1,7 @@
-# Subjective Lexical Frequency in LSU
+# Iconicity Ratings in LSU
 
-_Subjective Lexical Frequency in LSU_ is a task that gathers subjective
-frequency ratings for 277 signs from the Uruguayan sign language (LSU). The
+_Iconicity Ratings in LSU_ is a task that gathers iconicity ratings for 277
+signs from the Uruguayan sign language (LSU). The
 task was programmed using [Django](https://www.djangoproject.com/),
 [Bootstrap](https://getbootstrap.com) and [jsPsych](https://www.jspsych.org),
 and can be run online or offline (it is configured to display a larger list of
